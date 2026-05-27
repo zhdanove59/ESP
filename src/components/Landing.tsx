@@ -1,4 +1,5 @@
 import { Leaf, Truck, Globe2, Phone, Mail, MapPin, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import logo from "@/assets/logo-esp.jpeg";
@@ -150,7 +151,7 @@ function Footer() {
             <a href={`https://wa.me/33745687745?text=${waMsg}`} target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">Wario</a>
             {" "}— ¿Quieres una web para tu negocio?
           </div>
-          <a href="/admin" className="text-xs text-muted-foreground/70 hover:text-primary">Administración</a>
+          <Link to="/admin" className="text-xs text-muted-foreground/70 hover:text-primary">Administración</Link>
         </div>
       </div>
     </footer>
