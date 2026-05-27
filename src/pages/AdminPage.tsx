@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,17 +12,13 @@ import logo from "@/assets/logo-esp.jpeg";
 const PASSWORD = "admin123";
 const TOKEN_KEY = "esp_admin_token";
 
-export const Route = createFileRoute("/admin")({
-  head: () => ({ meta: [{ title: "Administración — ESP" }, { name: "robots", content: "noindex,nofollow" }] }),
-  component: AdminPage,
-});
-
-function AdminPage() {
+export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [pwd, setPwd] = useState("");
 
   useEffect(() => {
-    if (typeof window !== "undefined" && sessionStorage.getItem(TOKEN_KEY)) setAuthed(true);
+    document.title = "Administración — ESP";
+    if (sessionStorage.getItem(TOKEN_KEY)) setAuthed(true);
   }, []);
 
   const login = (e: React.FormEvent) => {
