@@ -124,9 +124,9 @@ export default function InvoiceGenerator({ onLogout }: { onLogout: () => void })
                   <tr key={l.id} className="border-b last:border-0">
                     <td className="py-2 pr-2"><Input value={l.codigo} onChange={(e) => updateLine(l.id, { codigo: e.target.value })} /></td>
                     <td className="py-2 pr-2"><Input value={l.descripcion} onChange={(e) => updateLine(l.id, { descripcion: e.target.value })} /></td>
-                    <td className="py-2 pr-2"><Input inputMode="decimal" value={String(l.iva)} onChange={(e) => updateLine(l.id, { iva: num(e.target.value) })} /></td>
-                    <td className="py-2 pr-2"><Input inputMode="decimal" value={String(l.cantidad)} onChange={(e) => updateLine(l.id, { cantidad: num(e.target.value) })} /></td>
-                    <td className="py-2 pr-2"><Input inputMode="decimal" value={String(l.precio)} onChange={(e) => updateLine(l.id, { precio: num(e.target.value) })} /></td>
+                    <td className="py-2 pr-2"><NumberInput value={l.iva} onChange={(v) => updateLine(l.id, { iva: v })} /></td>
+                    <td className="py-2 pr-2"><NumberInput value={l.cantidad} onChange={(v) => updateLine(l.id, { cantidad: v })} /></td>
+                    <td className="py-2 pr-2"><NumberInput value={l.precio} onChange={(v) => updateLine(l.id, { precio: v })} /></td>
                     <td className="py-2 pr-2 text-right font-medium">{fmt(l.cantidad * l.precio)}</td>
                     <td className="py-2"><Button variant="ghost" size="icon" onClick={() => setData((d) => ({ ...d, lines: d.lines.filter((x) => x.id !== l.id) }))}><Trash2 className="h-4 w-4 text-destructive" /></Button></td>
                   </tr>
