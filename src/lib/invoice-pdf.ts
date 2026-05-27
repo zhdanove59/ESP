@@ -76,31 +76,27 @@ export async function generateInvoicePdf(data: InvoiceData) {
 
   try {
     const logo = await loadLogo();
-    doc.addImage(logo, "JPEG", 14, 10, 24, 24);
+    doc.addImage(logo, "JPEG", 14, 10, 22, 22);
   } catch {}
 
-  // Header company
-  doc.setFontSize(13).setFont("helvetica", "bold").setTextColor(26, 58, 122);
-  doc.text("EUROPE SPAIN PIONEERS EXP & IMP", 42, 16);
-  doc.setFontSize(9).setFont("helvetica", "normal").setTextColor(60);
-  doc.text("CIF: B44815439", 42, 22);
-  doc.text("Calle Montesclaros 12, 45600 Talavera de la Reina", 42, 27);
-  doc.text("Tel: +34 692 723 388  ·  EUROPESPAINPIONEERS@GMAIL.com", 42, 32);
+  // Header company (left, compact)
+  doc.setFontSize(12).setFont("helvetica", "bold").setTextColor(26, 58, 122);
+  doc.text("EUROPE SPAIN PIONEERS EXP & IMP", 40, 15);
+  doc.setFontSize(8).setFont("helvetica", "normal").setTextColor(60);
+  doc.text("CIF: B44815439", 40, 20);
+  doc.text("Calle Montesclaros 12, 45600 Talavera de la Reina", 40, 24);
+  doc.text("Tel: +34 692 723 388", 40, 28);
+  doc.text("EUROPESPAINPIONEERS@GMAIL.com", 40, 32);
 
-  // Factura title box
-  doc.setDrawColor(26, 58, 122).setLineWidth(0.4);
-  doc.roundedRect(pageW - 75, 10, 61, 26, 2, 2);
-  doc.setFontSize(14).setFont("helvetica", "bold").setTextColor(26, 58, 122);
-  doc.text("FACTURA", pageW - 72, 17);
-  doc.setFontSize(9).setFont("helvetica", "normal").setTextColor(40);
-  doc.text(`Nº: ${data.numFactura || "-"}`, pageW - 72, 23);
-  doc.text(`Fecha: ${data.fecha}`, pageW - 72, 28);
-  doc.text(`Forma pago: ${data.formaPago}`, pageW - 72, 33);
-
-  // Cliente box
-  let y = 46;
+  // Combined CLIENTE + FACTURA box
+  const y = 42;
+  const boxH = 42;
+  const splitX = pageW / 2 + 5;
   doc.setDrawColor(200).setFillColor(245, 247, 250);
-  doc.roundedRect(14, y, pageW - 28, 36, 2, 2, "FD");
+  doc.roundedRect(14, y, pageW - 28, boxH, 2, 2, "FD");
+  doc.setDrawColor(220).line(splitX, y + 2, splitX, y + boxH - 2);
+
+  // Cliente (left half)
   doc.setFontSize(10).setFont("helvetica", "bold").setTextColor(26, 58, 122);
   doc.text("CLIENTE", 18, y + 6);
   doc.setFontSize(9).setFont("helvetica", "normal").setTextColor(40);
@@ -110,12 +106,20 @@ export async function generateInvoicePdf(data: InvoiceData) {
   doc.text(`Dirección: ${c.direccion}`, 18, y + 22);
   doc.text(`${c.cp} ${c.ciudad}`, 18, y + 27);
   doc.text(`Provincia: ${c.provincia}`, 18, y + 32);
-  doc.text(`Tel: ${c.telefono}`, pageW - 70, y + 32);
-  doc.text(`Código cliente: ${data.codigoCliente || "-"}`, pageW - 70, y + 12);
+  doc.text(`Tel: ${c.telefono}`, 18, y + 37);
+
+  // Factura (right half)
+  doc.setFontSize(12).setFont("helvetica", "bold").setTextColor(26, 58, 122);
+  doc.text("FACTURA", splitX + 4, y + 7);
+  doc.setFontSize(9).setFont("helvetica", "normal").setTextColor(40);
+  doc.text(`Nº: ${data.numFactura || "-"}`, splitX + 4, y + 14);
+  doc.text(`Fecha: ${data.fecha}`, splitX + 4, y + 20);
+  doc.text(`Forma pago: ${data.formaPago}`, splitX + 4, y + 26);
+  doc.text(`Código cliente: ${data.codigoCliente || "-"}`, splitX + 4, y + 32);
 
   // Products
   autoTable(doc, {
-    startY: y + 42,
+    startY: y + boxH + 6,
     head: [["CÓDIGO", "DESCRIPCIÓN", "IVA %", "CANT.", "PRECIO", "IMPORTE"]],
     body: data.lines.map((l) => [
       l.codigo,
