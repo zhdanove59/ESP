@@ -80,23 +80,19 @@ export async function generateInvoicePdf(data: InvoiceData) {
   } catch {}
 
   // Header company
-  doc.setFontSize(12).setFont("helvetica", "bold").setTextColor(26, 58, 122);
-  doc.text("EUROPE SPAIN PIONEERS EXP & IMP", 42, 16);
-  doc.setFontSize(8).setFont("helvetica", "normal").setTextColor(60);
-  doc.text("CIF: B44815439", 42, 21);
-  doc.text("Calle Montesclaros 12,", 42, 26);
-  doc.text("45600 Talavera de la Reina", 42, 30);
-  doc.text("Tel: +34 692 723 388", 42, 34);
-  doc.text("EUROPESPAINPIONEERS@GMAIL.com", 42, 38);
-
-  // Factura title box (narrower, aligned right)
-  const fbW = 56;
-  const fbX = pageW - 14 - fbW;
-  doc.setDrawColor(26, 58, 122).setLineWidth(0.4);
-  doc.roundedRect(fbX, 10, fbW, 28, 2, 2);
   doc.setFontSize(13).setFont("helvetica", "bold").setTextColor(26, 58, 122);
-  doc.text("FACTURA", fbX + 3, 17);
-  doc.setFontSize(8).setFont("helvetica", "normal").setTextColor(40);
+  doc.text("EUROPE SPAIN PIONEERS EXP & IMP", 42, 16);
+  doc.setFontSize(9).setFont("helvetica", "normal").setTextColor(60);
+  doc.text("CIF: B44815439", 42, 22);
+  doc.text("Calle Montesclaros 12, 45600 Talavera de la Reina", 42, 27);
+  doc.text("Tel: +34 692 723 388  ·  EUROPESPAINPIONEERS@GMAIL.com", 42, 32);
+
+  // Factura title box
+  doc.setDrawColor(26, 58, 122).setLineWidth(0.4);
+  doc.roundedRect(pageW - 75, 10, 61, 26, 2, 2);
+  doc.setFontSize(14).setFont("helvetica", "bold").setTextColor(26, 58, 122);
+  doc.text("FACTURA", pageW - 72, 17);
+  doc.setFontSize(9).setFont("helvetica", "normal").setTextColor(40);
   doc.text(`Nº: ${data.numFactura || "-"}`, pageW - 72, 23);
   doc.text(`Fecha: ${data.fecha}`, pageW - 72, 28);
   doc.text(`Forma pago: ${data.formaPago}`, pageW - 72, 33);
