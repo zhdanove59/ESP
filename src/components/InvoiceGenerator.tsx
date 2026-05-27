@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Trash2, Download, LogOut } from "lucide-react";
 import { toast } from "sonner";
 import { computeTotals, fmt, generateInvoicePdf, type InvoiceData, type ProductLine } from "@/lib/invoice-pdf";
+import NumberInput from "@/components/NumberInput";
 
 const num = (v: string) => {
   const n = parseFloat((v || "").toString().replace(",", "."));
