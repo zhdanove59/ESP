@@ -139,8 +139,8 @@ export default function InvoiceGenerator({ onLogout }: { onLogout: () => void })
         <div className="flex justify-end">
           <Card className="w-full max-w-[45%] min-w-[320px] p-6">
             <div className="mb-4 grid grid-cols-2 gap-3">
-              <div><Label className="text-xs">% Descuento</Label><Input inputMode="decimal" value={String(data.descuento)} onChange={(e) => setData({ ...data, descuento: num(e.target.value) })} /></div>
-              <div><Label className="text-xs">% R.EQV</Label><Input inputMode="decimal" value={String(data.reqv)} onChange={(e) => setData({ ...data, reqv: num(e.target.value) })} /></div>
+              <div><Label className="text-xs">% Descuento</Label><NumberInput value={data.descuento} onChange={(v) => setData({ ...data, descuento: v })} /></div>
+              <div><Label className="text-xs">% R.EQV</Label><NumberInput value={data.reqv} onChange={(v) => setData({ ...data, reqv: v })} /></div>
             </div>
 
             <table className="w-full text-xs">
