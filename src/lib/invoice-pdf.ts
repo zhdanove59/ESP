@@ -96,17 +96,27 @@ export async function generateInvoicePdf(data: InvoiceData) {
   doc.roundedRect(14, y, pageW - 28, boxH, 2, 2, "FD");
   doc.setDrawColor(220).line(splitX, y + 2, splitX, y + boxH - 2);
 
-  // Cliente (left half)
+  // Cliente (left half) - wrap long fields to stay inside the box
   doc.setFontSize(10).setFont("helvetica", "bold").setTextColor(26, 58, 122);
   doc.text("CLIENTE", 18, y + 6);
   doc.setFontSize(9).setFont("helvetica", "normal").setTextColor(40);
   const c = data.cliente;
-  doc.text(`${c.nombre}`, 18, y + 12);
-  doc.text(`C.I.F.: ${c.cif}`, 18, y + 17);
-  doc.text(`Dirección: ${c.direccion}`, 18, y + 22);
-  doc.text(`${c.cp} ${c.ciudad}`, 18, y + 27);
-  doc.text(`Provincia: ${c.provincia}`, 18, y + 32);
-  doc.text(`Tel: ${c.telefono}`, 18, y + 37);
+  const maxW = splitX - 18 - 4; // available width inside left half
+  const wrap = (t: string) => doc.splitTextToSize(t, maxW) as string[];
+  const lineH = 4;
+  let cy = y + 12;
+  const drawWrapped = (t: string) => {
+    const lines = wrap(t);
+    doc.text(lines, 18, cy);
+    cy += lineH * lines.length + 1;
+  };
+  drawWrapped(c.nombre || "");
+  drawWrapped(`C.I.F.: ${c.cif}`);
+  drawWrapped(`Dirección: ${c.direccion}`);
+  drawWrapped(`${c.cp} ${c.ciudad}`);
+  drawWrapped(`Provincia: ${c.provincia}`);
+  drawWrapped(`Tel: ${c.telefono}`);
+
 
   // Factura (right half)
   doc.setFontSize(12).setFont("helvetica", "bold").setTextColor(26, 58, 122);
