@@ -88,25 +88,38 @@ export async function generateInvoicePdf(data: InvoiceData) {
   doc.text("Tel: +34 692 723 388", 40, 28);
   doc.text("EUROPESPAINPIONEERS@GMAIL.com", 40, 32);
 
-  // Combined CLIENTE + FACTURA box
+  // Combined CLIENTE + FACTURA box (height computed after content)
   const y = 42;
-  const boxH = 42;
   const splitX = pageW / 2 + 5;
-  doc.setDrawColor(200).setFillColor(245, 247, 250);
-  doc.roundedRect(14, y, pageW - 28, boxH, 2, 2, "FD");
-  doc.setDrawColor(220).line(splitX, y + 2, splitX, y + boxH - 2);
 
-  // Cliente (left half)
+
+  // Cliente (left half) - wrap long fields to stay inside the box
   doc.setFontSize(10).setFont("helvetica", "bold").setTextColor(26, 58, 122);
   doc.text("CLIENTE", 18, y + 6);
   doc.setFontSize(9).setFont("helvetica", "normal").setTextColor(40);
   const c = data.cliente;
-  doc.text(`${c.nombre}`, 18, y + 12);
-  doc.text(`C.I.F.: ${c.cif}`, 18, y + 17);
-  doc.text(`Dirección: ${c.direccion}`, 18, y + 22);
-  doc.text(`${c.cp} ${c.ciudad}`, 18, y + 27);
-  doc.text(`Provincia: ${c.provincia}`, 18, y + 32);
-  doc.text(`Tel: ${c.telefono}`, 18, y + 37);
+  const maxW = splitX - 18 - 4; // available width inside left half
+  const wrap = (t: string) => doc.splitTextToSize(t, maxW) as string[];
+  const lineH = 4;
+  let cy = y + 12;
+  const drawWrapped = (t: string) => {
+    const lines = wrap(t);
+    doc.text(lines, 18, cy);
+    cy += lineH * lines.length + 1;
+  };
+  drawWrapped(c.nombre || "");
+  drawWrapped(`C.I.F.: ${c.cif}`);
+  drawWrapped(`Dirección: ${c.direccion}`);
+  drawWrapped(`${c.cp} ${c.ciudad}`);
+  drawWrapped(`Provincia: ${c.provincia}`);
+  drawWrapped(`Tel: ${c.telefono}`);
+
+  // Compute final box height based on tallest column
+  const rightBottom = y + 32 + 4;
+  const boxH = Math.max(42, cy - y, rightBottom - y) + 2;
+  doc.setDrawColor(200).setFillColor(245, 247, 250);
+  doc.roundedRect(14, y, pageW - 28, boxH, 2, 2, "S");
+  doc.setDrawColor(220).line(splitX, y + 2, splitX, y + boxH - 2);
 
   // Factura (right half)
   doc.setFontSize(12).setFont("helvetica", "bold").setTextColor(26, 58, 122);
@@ -120,6 +133,7 @@ export async function generateInvoicePdf(data: InvoiceData) {
   // Products
   autoTable(doc, {
     startY: y + boxH + 6,
+
     head: [["CÓDIGO", "DESCRIPCIÓN", "IVA %", "CANT.", "PRECIO", "IMPORTE"]],
     body: data.lines.map((l) => [
       l.codigo,
