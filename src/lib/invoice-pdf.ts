@@ -114,6 +114,12 @@ export async function generateInvoicePdf(data: InvoiceData) {
   drawWrapped(`Provincia: ${c.provincia}`);
   drawWrapped(`Tel: ${c.telefono}`);
 
+  // Compute final box height based on tallest column
+  const rightBottom = y + 32 + 4;
+  const boxH = Math.max(42, cy - y, rightBottom - y) + 2;
+  doc.setDrawColor(200).setFillColor(245, 247, 250);
+  doc.roundedRect(14, y, pageW - 28, boxH, 2, 2, "S");
+  doc.setDrawColor(220).line(splitX, y + 2, splitX, y + boxH - 2);
 
   // Factura (right half)
   doc.setFontSize(12).setFont("helvetica", "bold").setTextColor(26, 58, 122);
@@ -127,6 +133,7 @@ export async function generateInvoicePdf(data: InvoiceData) {
   // Products
   autoTable(doc, {
     startY: y + boxH + 6,
+
     head: [["CÓDIGO", "DESCRIPCIÓN", "IVA %", "CANT.", "PRECIO", "IMPORTE"]],
     body: data.lines.map((l) => [
       l.codigo,
