@@ -88,13 +88,10 @@ export async function generateInvoicePdf(data: InvoiceData) {
   doc.text("Tel: +34 692 723 388", 40, 28);
   doc.text("EUROPESPAINPIONEERS@GMAIL.com", 40, 32);
 
-  // Combined CLIENTE + FACTURA box
+  // Combined CLIENTE + FACTURA box (height computed after content)
   const y = 42;
-  const boxH = 42;
   const splitX = pageW / 2 + 5;
-  doc.setDrawColor(200).setFillColor(245, 247, 250);
-  doc.roundedRect(14, y, pageW - 28, boxH, 2, 2, "FD");
-  doc.setDrawColor(220).line(splitX, y + 2, splitX, y + boxH - 2);
+
 
   // Cliente (left half) - wrap long fields to stay inside the box
   doc.setFontSize(10).setFont("helvetica", "bold").setTextColor(26, 58, 122);
